@@ -2,6 +2,8 @@ package org.acme.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class PostEntity {
     @Id
@@ -11,6 +13,9 @@ public class PostEntity {
 
     @Column
     private String text;
+
+    @Column
+    private LocalDateTime time;
 
     @ManyToOne
     private UserEntity user;

@@ -32,4 +32,8 @@ public class UserService {
         return userRepository.findAll().stream().toList();
     }
 
+    public UserEntity listarUsuarioPorId(long idUser){
+        return userRepository.findById(idUser);
+    }
+
 }
