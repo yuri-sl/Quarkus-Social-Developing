@@ -8,6 +8,8 @@ import org.acme.dto.CreateUserResponseDTO;
 import org.acme.entity.UserEntity;
 import org.acme.repository.UserRepository;
 
+import java.util.List;
+
 @AllArgsConstructor
 @ApplicationScoped
 public class UserService {
@@ -25,6 +27,9 @@ public class UserService {
         CreateUserResponseDTO usuarioCriadoNoBanco = CreateUserResponseDTO.mapearEntidade(usuarioCriado);
         return usuarioCriadoNoBanco;
 
+    }
+    public List<UserEntity> listarTodosUsuarios(){
+        return userRepository.findAll().stream().toList();
     }
 
 }
