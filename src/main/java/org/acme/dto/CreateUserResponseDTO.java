@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.acme.entity.UserEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,4 +18,14 @@ public class CreateUserResponseDTO {
     private String name;
     private String email;
     private Integer age;
+
+    public static CreateUserResponseDTO mapearEntidade(UserEntity user){
+        CreateUserResponseDTO createUserResponseDTO = CreateUserResponseDTO.builder()
+                .id(user.getId_user())
+                .name(user.getName())
+                .email(user.getEmail())
+                .age(user.getAge())
+                .build();
+        return  createUserResponseDTO;
+    }
 }

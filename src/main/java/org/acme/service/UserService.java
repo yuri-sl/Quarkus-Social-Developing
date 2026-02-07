@@ -22,13 +22,7 @@ public class UserService {
                 .build();
         userRepository.persist(usuarioCriado);
 
-        CreateUserResponseDTO usuarioCriadoNoBanco = CreateUserResponseDTO.builder()
-                .id(usuarioCriado.getId_user())
-                .name(usuarioCriado.getName())
-                .email(usuarioCriado.getEmail())
-                .age(usuarioCriado.getAge())
-                .build();
-
+        CreateUserResponseDTO usuarioCriadoNoBanco = CreateUserResponseDTO.mapearEntidade(usuarioCriado);
         return usuarioCriadoNoBanco;
 
     }
