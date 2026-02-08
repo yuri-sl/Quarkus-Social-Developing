@@ -1,0 +1,38 @@
+package org.acme.resource;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import lombok.AllArgsConstructor;
+import org.acme.dto.FollowRequestDTO;
+import org.acme.dto.FollowResponseDTO;
+import org.acme.entity.UserEntity;
+import org.acme.service.FollowerService;
+import org.acme.service.UserService;
+import org.jboss.resteasy.reactive.RestResponse;
+
+import java.awt.*;
+
+@ApplicationScoped
+@Path("/users/{userId}/followers")
+@AllArgsConstructor
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public class FollowerResource {
+    final FollowerService followerService;
+    final UserService userService;
+
+    //PUT é feito pois a resposta é mesma sempre. Só vai verificar se o cara segue o outro
+    @PUT
+    public RestResponse<?> followUser(
+            @PathParam("userId") long userId, FollowRequestDTO followRequestDTO) {
+        try {
+            followerService.FollowUser(userId, followRequestDTO);
+            return RestResponse.status(RestResponse.Status.OK,"Seguindo");
+        } catch (ClassNotFoundException e) {
+            return RestResponse.status(RestResponse.Status.NOT_FOUND, e.getMessage());
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    }
