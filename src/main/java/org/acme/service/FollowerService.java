@@ -11,6 +11,7 @@ import org.acme.repository.FollowerRepository;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 @ApplicationScoped
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class FollowerService {
         if(usuarioEncontrado == null || usuarioEncontradoSeguir == null){
             throw new ClassNotFoundException("Usuário não encontrado");
         }
-        boolean userFound = followerRepository.isUserFollowed(usuarioEncontradoSeguir,usuarioEncontrado);
+        boolean userFound = followerRepository.isUserFollowed(usuarioEncontrado,usuarioEncontradoSeguir);
 
 
         if(!userFound){
@@ -36,15 +37,8 @@ public class FollowerService {
                     .follower(usuarioEncontrado)
                     .build();
             followerRepository.persist(followerEntity);
-
-            /*
-            FollowResponseDTO followResponseDTO = FollowResponseDTO.builder()
-                    .user(usuarioEncontrado)
-                    .follower(usuarioEncontradoSeguir)
-                    .build();
-
-             */
-
+        }else{
+            throw new RejectedExecutionException("Usuário já existe no sistema");
         }
 
     }

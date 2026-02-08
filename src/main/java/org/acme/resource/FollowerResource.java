@@ -12,6 +12,7 @@ import org.acme.service.UserService;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.awt.*;
+import java.util.concurrent.RejectedExecutionException;
 
 @ApplicationScoped
 @Path("/users/{userId}/followers")
@@ -28,9 +29,11 @@ public class FollowerResource {
             @PathParam("userId") long userId, FollowRequestDTO followRequestDTO) {
         try {
             followerService.FollowUser(userId, followRequestDTO);
-            return RestResponse.status(RestResponse.Status.OK,"Seguindo");
+            return RestResponse.status(RestResponse.Status.OK, "Seguindo");
         } catch (ClassNotFoundException e) {
             return RestResponse.status(RestResponse.Status.NOT_FOUND, e.getMessage());
+        } catch (RejectedExecutionException ex) {
+            return  RestResponse.status(RestResponse.Status.BAD_REQUEST, ex.getMessage());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
