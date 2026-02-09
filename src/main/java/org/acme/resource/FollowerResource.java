@@ -3,6 +3,7 @@ package org.acme.resource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import org.acme.dto.FollowRequestDTO;
 import org.acme.dto.FollowResponseDTO;
@@ -34,7 +35,10 @@ public class FollowerResource {
             return RestResponse.status(RestResponse.Status.NOT_FOUND, e.getMessage());
         } catch (RejectedExecutionException ex) {
             return  RestResponse.status(RestResponse.Status.BAD_REQUEST, ex.getMessage());
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
+            return RestResponse.status(Response.Status.BAD_REQUEST,e.getMessage());
+        }
+        catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }

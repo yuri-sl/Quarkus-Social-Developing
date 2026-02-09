@@ -22,11 +22,15 @@ public class FollowerService {
 
     @Transactional
     public void FollowUser(long userid, FollowRequestDTO followRequestDTO) throws ClassNotFoundException {
+
         UserEntity usuarioEncontrado = userService.listarUsuarioPorId(userid);
         UserEntity usuarioEncontradoSeguir = userService.listarUsuarioPorId(followRequestDTO.getFollowerId());
 
         if(usuarioEncontrado == null || usuarioEncontradoSeguir == null){
             throw new ClassNotFoundException("Usuário não encontrado");
+        }
+        if(usuarioEncontrado == usuarioEncontradoSeguir){
+            throw new IllegalArgumentException("Nao pode seuir a si mesmo");
         }
         boolean userFound = followerRepository.isUserFollowed(usuarioEncontrado,usuarioEncontradoSeguir);
 
