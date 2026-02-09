@@ -7,6 +7,8 @@ import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import org.acme.dto.FollowRequestDTO;
 import org.acme.dto.FollowResponseDTO;
+import org.acme.dto.FollowersPerUserResponseDTO;
+import org.acme.entity.FollowerEntity;
 import org.acme.entity.UserEntity;
 import org.acme.service.FollowerService;
 import org.acme.service.UserService;
@@ -42,4 +44,14 @@ public class FollowerResource {
             throw new RuntimeException(e);
         }
     }
+
+    @GET
+    public RestResponse<?> buscarTodosSeguidoresDeUsuario(@PathParam("userId") long userId){
+        try{
+            return RestResponse.status(RestResponse.Status.FOUND,followerService.buscarFollowersDeUsuario(userId));
+
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
     }
+}

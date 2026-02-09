@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class FollowersInfoDTO {
     private long followerId;
     private String followerName;
+    private String email;
 }

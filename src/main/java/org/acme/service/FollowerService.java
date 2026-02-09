@@ -5,11 +5,14 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.acme.dto.FollowRequestDTO;
 import org.acme.dto.FollowResponseDTO;
+import org.acme.dto.FollowersInfoDTO;
+import org.acme.dto.FollowersPerUserResponseDTO;
 import org.acme.entity.FollowerEntity;
 import org.acme.entity.UserEntity;
 import org.acme.repository.FollowerRepository;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -46,11 +49,27 @@ public class FollowerService {
         }
 
     }
-/*
-    public List<FollowerEntity>(long userId){
 
+    public FollowersPerUserResponseDTO buscarFollowersDeUsuario(long id){
+      List<FollowerEntity> listaFollowers  = followerRepository.listarSeguidoresDeUsuario(id);
+      List<FollowersInfoDTO> infosFollowers = new ArrayList<>();
+      String nomeDeUsuario = listaFollowers.getFirst().getUser().getName();
+      for(FollowerEntity f : listaFollowers){
+          FollowersInfoDTO dadoFollowerAtual = FollowersInfoDTO.builder()
+                  .followerId(f.getFollower().getId_user())
+                  .followerName(f.getFollower().getName())
+                  .email(f.getFollower().getEmail())
+                  .build();
+
+          infosFollowers.add(dadoFollowerAtual);
+      }
+
+      FollowersPerUserResponseDTO followersPerUserResponseDTO = FollowersPerUserResponseDTO.builder()
+              .name(nomeDeUsuario)
+              .listaSeguidores(infosFollowers)
+              .build();
+      return followersPerUserResponseDTO;
     }
-*/
 
 
 
