@@ -54,4 +54,13 @@ public class FollowerResource {
             throw new RuntimeException(e);
         }
     }
+
+    @DELETE
+    public RestResponse<?> deixarDeSeguirUsuario(@PathParam("userId") long userId,@QueryParam("unfollowed_by") long unfollowed_by){
+        try{
+            return RestResponse.status(RestResponse.Status.OK,followerService.deletarFollowersUserId(userId,unfollowed_by));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

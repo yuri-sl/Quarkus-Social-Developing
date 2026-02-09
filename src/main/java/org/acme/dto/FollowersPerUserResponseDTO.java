@@ -14,5 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class FollowersPerUserResponseDTO {
     private String name;
+    private long followerCount;
     private List<FollowersInfoDTO> listaSeguidores;
 }

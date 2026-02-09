@@ -10,6 +10,7 @@ import org.acme.dto.FollowersPerUserResponseDTO;
 import org.acme.entity.FollowerEntity;
 import org.acme.entity.UserEntity;
 import org.acme.repository.FollowerRepository;
+import org.acme.repository.UserRepository;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.ArrayList;
@@ -65,10 +66,38 @@ public class FollowerService {
       }
 
       FollowersPerUserResponseDTO followersPerUserResponseDTO = FollowersPerUserResponseDTO.builder()
+              .followerCount(infosFollowers.size())
               .name(nomeDeUsuario)
               .listaSeguidores(infosFollowers)
               .build();
       return followersPerUserResponseDTO;
+    }
+    @Transactional
+    public FollowersPerUserResponseDTO deletarFollowersUserId(long id, long removeFollowerId){
+        UserEntity follower = userService.listarUsuarioPorId(removeFollowerId);
+        UserEntity user = userService.listarUsuarioPorId(id);
+        if(followerRepository.isUserFollowed(follower,user)){
+            followerRepository.delete("WHERE follower = ?1 AND user = ?2",follower,user);
+        }
+        List<FollowerEntity> listaFollowers  = followerRepository.listarSeguidoresDeUsuario(id);
+        List<FollowersInfoDTO> infosFollowers = new ArrayList<>();
+        String nomeDeUsuario = listaFollowers.getFirst().getUser().getName();
+        for(FollowerEntity f : listaFollowers){
+            FollowersInfoDTO dadoFollowerAtual = FollowersInfoDTO.builder()
+                    .followerId(f.getFollower().getId_user())
+                    .followerName(f.getFollower().getName())
+                    .email(f.getFollower().getEmail())
+                    .build();
+
+            infosFollowers.add(dadoFollowerAtual);
+        }
+
+        FollowersPerUserResponseDTO followersPerUserResponseDTO = FollowersPerUserResponseDTO.builder()
+                .followerCount(infosFollowers.size())
+                .name(nomeDeUsuario)
+                .listaSeguidores(infosFollowers)
+                .build();
+        return followersPerUserResponseDTO;
     }
 
 
