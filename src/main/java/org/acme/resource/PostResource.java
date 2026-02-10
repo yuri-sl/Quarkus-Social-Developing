@@ -1,10 +1,7 @@
 package org.acme.resource;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -37,6 +34,17 @@ public class PostResource {
         try{
             List postsBuscados = postService.buscarPosts();
             return RestResponse.status(Response.Status.FOUND,postsBuscados);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GET
+    @Path("/{userId}")
+    public RestResponse<List<PostEntity>> buscarTodasPostagens(@PathParam("userId") long userId,
+                                                               @QueryParam("usuario_logado") long usuarioLogadoId){
+        try{
+            return RestResponse.status(Response.Status.FOUND,postService.buscarPostPorIdUsuarioSeguir(userId,usuarioLogadoId));
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
