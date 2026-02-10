@@ -16,6 +16,9 @@ public class PostRepository implements PanacheRepository<PostEntity> {
     public PostEntity fetchPostById(long userId){
         return find("WHERE userentity.id = ?1",userId).stream().toList().getFirst();
     }
+    public List<PostEntity> fetchPostByIdSpecific(long userId){
+        return find("WHERE userentity.id = ?1",userId).stream().toList();
+    }
 
 
 }
