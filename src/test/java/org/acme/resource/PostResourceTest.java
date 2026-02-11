@@ -116,14 +116,35 @@ class PostResourceTest {
                 .contentType(ContentType.JSON)
                 .when()
                 .pathParam("userId",99)
-                .get()
+                .get("/{userId}")
                 .then()
                 .statusCode(404)
                 .extract().response();
     }
 
     @Test
-    @DisplayName("Should find a user when it exists")
+    @DisplayName("Should post a new message from a user")
+    public void createNewPost(){
+        CreatePostRequestDTO createPostRequestDTO = CreatePostRequestDTO.builder()
+                .text("Primeira postagem de teste").build();
+
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(createPostRequestDTO)
+                .pathParam("user_id",userId)
+                .when()
+                .post("/{user_id}")
+                .then()
+                .statusCode(200)
+                .extract().response();
+
+    }
+
+
+
+    @Test
+    @DisplayName("Should fetch all posts from a user")
     @Order(2)
     public void FetchedAllPosts(){
         given()
