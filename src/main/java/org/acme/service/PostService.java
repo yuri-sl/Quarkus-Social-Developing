@@ -29,16 +29,22 @@ public class PostService {
     public List<PostEntity> buscarPostPorIdUsuarioSeguir(long userId, long usuarioLogadoId){
         UserEntity usuarioBuscado = userService.listarUsuarioPorId(userId);
         UserEntity usuarioLogado = userService.listarUsuarioPorId(usuarioLogadoId);
-
+        validarUsuario(usuarioBuscado);
+        validarUsuario(usuarioLogado);
         if(!followerRepository.isUserFollowed(usuarioBuscado,usuarioLogado))
             throw new RuntimeException("Não pode ver posts de quem vc n segue");
 
         return postRepository.fetchPostByIdSpecific(userId);
     }
+    public void validarUsuario(UserEntity usuario){
+        if(usuario == null)
+            throw new IllegalArgumentException("Usuário não encontrado");
+    }
 
     @Transactional
     public void criarPostagem(CreatePostRequestDTO dados,long user_id){
         UserEntity userEncontrado = userRepository.listarUsuarioPorId(user_id);
+        validarUsuario(userEncontrado);
         LocalDateTime hora = LocalDateTime.now();
 
         PostEntity createPot = PostEntity.builder()

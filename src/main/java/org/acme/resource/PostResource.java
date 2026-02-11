@@ -41,11 +41,14 @@ public class PostResource {
 
     @GET
     @Path("/{userId}")
-    public RestResponse<List<PostEntity>> buscarTodasPostagens(@PathParam("userId") long userId,
+    public RestResponse<?> buscarTodasPostagens(@PathParam("userId") long userId,
                                                                @QueryParam("usuario_logado") long usuarioLogadoId){
         try{
             return RestResponse.status(Response.Status.FOUND,postService.buscarPostPorIdUsuarioSeguir(userId,usuarioLogadoId));
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
+            return RestResponse.status(RestResponse.Status.NOT_FOUND,e.getMessage());
+        }
+        catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }
