@@ -33,16 +33,19 @@ public class UserResource {
         try {
             List<UserEntity> listarTodosUsuarios = userService.listarTodosUsuarios();
             return RestResponse.status(RestResponse.Status.FOUND,listarTodosUsuarios);
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }
 
     @POST
-    public RestResponse<CreateUserResponseDTO> criarUsuarioBanco(CreateUserRequestDTO dadosInput){
+    public RestResponse<?> criarUsuarioBanco(CreateUserRequestDTO dadosInput){
         try{
             CreateUserResponseDTO usuarioCriado = userService.createNewUser(dadosInput);
             return RestResponse.status(Response.Status.CREATED,usuarioCriado);
+        }catch (IllegalArgumentException e) {
+            return RestResponse.status(RestResponse.Status.BAD_REQUEST,e.getMessage());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

@@ -18,6 +18,7 @@ public class UserService {
 
     @Transactional
     public CreateUserResponseDTO createNewUser(CreateUserRequestDTO dados){
+        validarCamposCriarUsuario(dados);
         UserEntity usuarioCriado = UserEntity.builder()
                 .name(dados.getName())
                 .email(dados.getEmail())
@@ -45,6 +46,13 @@ public class UserService {
            throw new RuntimeException("Usuário não encontrado");
        }
        userRepository.deleteById(idUser);
+    }
+
+    public void validarCamposCriarUsuario(CreateUserRequestDTO dados){
+        if(dados.getName().isBlank() || dados.getAge() == null ||
+        dados.getEmail().isBlank()){
+            throw new IllegalArgumentException("Todos os campos devem estar preenchidos");
+        }
     }
 
     @Transactional
