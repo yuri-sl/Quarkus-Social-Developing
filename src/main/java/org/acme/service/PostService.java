@@ -4,7 +4,9 @@ package org.acme.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.acme.dto.CreatePostDTO;
 import org.acme.dto.CreatePostRequestDTO;
+import org.acme.dto.CreatePostResponseDTO;
 import org.acme.entity.PostEntity;
 import org.acme.entity.UserEntity;
 import org.acme.repository.FollowerRepository;
@@ -42,7 +44,7 @@ public class PostService {
     }
 
     @Transactional
-    public void criarPostagem(CreatePostRequestDTO dados,long user_id){
+    public CreatePostResponseDTO criarPostagem(CreatePostRequestDTO dados, long user_id){
         UserEntity userEncontrado = userRepository.listarUsuarioPorId(user_id);
         validarUsuario(userEncontrado);
         LocalDateTime hora = LocalDateTime.now();
@@ -53,6 +55,13 @@ public class PostService {
                 .user(userEncontrado).build();
 
         postRepository.persist(createPot);
+        CreatePostResponseDTO createPostResponseDTO = CreatePostResponseDTO.builder()
+                .postId(createPot.getId_post())
+                .text(createPot.getText())
+                .localDateTime(createPot.getTime())
+                .userEntityfrom(createPot.getUser())
+                .build();
+        return createPostResponseDTO;
     }
 
 

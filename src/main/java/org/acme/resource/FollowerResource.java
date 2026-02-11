@@ -31,7 +31,7 @@ public class FollowerResource {
     public RestResponse<?> followUser(
             @PathParam("userId") long userId, FollowRequestDTO followRequestDTO) {
         try {
-            followerService.FollowUser(userId, followRequestDTO);
+            followerService.followUser(userId, followRequestDTO);
             return RestResponse.status(RestResponse.Status.OK, "Seguindo");
         } catch (ClassNotFoundException e) {
             return RestResponse.status(RestResponse.Status.NOT_FOUND, e.getMessage());

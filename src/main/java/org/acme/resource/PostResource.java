@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.acme.dto.CreatePostRequestDTO;
+import org.acme.dto.CreatePostResponseDTO;
 import org.acme.entity.PostEntity;
 import org.acme.service.PostService;
 import org.jboss.resteasy.reactive.RestResponse;
@@ -22,10 +23,10 @@ public class PostResource {
     @Path("/{user_id}")
     public RestResponse<?> criarPostagem(@PathParam("user_id") long user_id, CreatePostRequestDTO dados){
         try{
-            postService.criarPostagem(dados,user_id);
-            return RestResponse.status(RestResponse.Status.OK,"Postagem Criada");
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            CreatePostResponseDTO createPostResponseDTO = postService.criarPostagem(dados,user_id);
+            return RestResponse.status(RestResponse.Status.OK,createPostResponseDTO);
+        } catch (IllegalArgumentException e) {
+            return RestResponse.status(RestResponse.Status.NOT_FOUND,e.getMessage());
         }
     }
 
@@ -44,7 +45,7 @@ public class PostResource {
     public RestResponse<?> buscarTodasPostagens(@PathParam("userId") long userId,
                                                                @QueryParam("usuario_logado") long usuarioLogadoId){
         try{
-            return RestResponse.status(Response.Status.FOUND,postService.buscarPostPorIdUsuarioSeguir(userId,usuarioLogadoId));
+            return RestResponse.status(Response.Status.ACCEPTED,postService.buscarPostPorIdUsuarioSeguir(userId,usuarioLogadoId));
         } catch (IllegalArgumentException e) {
             return RestResponse.status(RestResponse.Status.NOT_FOUND,e.getMessage());
         }
