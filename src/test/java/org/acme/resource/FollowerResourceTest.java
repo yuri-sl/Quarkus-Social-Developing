@@ -138,6 +138,28 @@ class FollowerResourceTest {
         var followerCount = response.jsonPath().get("followerCount");
         assertEquals(0,followerCount);
     }
+    @Test
+    @DisplayName("Should unfollow an user")
+    @Order(6)
+    public void unfollowUserErrorNotFound(){
+        FollowRequestDTO followRequestDTO = FollowRequestDTO.builder()
+                .followerId(userId2).build();
+        try{
+            followerService.followUser(userId,followRequestDTO);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        var response = given()
+                .contentType(ContentType.JSON)
+                .pathParam("userId",99)
+                .queryParam("unfollowed_by",userId)
+                .when()
+                .delete("/users/{userId}/followers")
+                .then()
+                .statusCode(400)
+                .extract().response();
+    }
+
 
 
 }

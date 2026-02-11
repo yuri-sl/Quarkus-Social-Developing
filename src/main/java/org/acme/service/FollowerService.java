@@ -79,6 +79,8 @@ public class FollowerService {
     }
     @Transactional
     public FollowersPerUserResponseDTO deletarFollowersUserId(long id, long removeFollowerId){
+        userService.verificarSeUsuarioExiste(id);
+        userService.verificarSeUsuarioExiste(removeFollowerId);
         UserEntity follower = userService.listarUsuarioPorId(removeFollowerId);
         UserEntity user = userService.listarUsuarioPorId(id);
         if(followerRepository.isUserFollowed(follower,user)){
