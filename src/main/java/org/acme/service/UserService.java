@@ -8,6 +8,7 @@ import org.acme.dto.CreateUserResponseDTO;
 import org.acme.dto.EditUserRequestDTO;
 import org.acme.entity.UserEntity;
 import org.acme.repository.UserRepository;
+import org.hibernate.query.UnknownNamedQueryException;
 
 import java.util.List;
 
@@ -41,11 +42,14 @@ public class UserService {
 
     @Transactional
     public void deletarUsuarioPorId(long idUser){
-       UserEntity usuarioEncontrado =   userRepository.findById(idUser);
-       if(usuarioEncontrado == null){
-           throw new RuntimeException("Usuário não encontrado");
-       }
+        verificarSeUsuarioExiste(idUser);
        userRepository.deleteById(idUser);
+    }
+    public void verificarSeUsuarioExiste(long idUser){
+        UserEntity usuarioEncontrado =   userRepository.findById(idUser);
+        if(usuarioEncontrado == null){
+            throw new UnknownNamedQueryException("Usuário não encontrado");
+        }
     }
 
     public void validarCamposCriarUsuario(CreateUserRequestDTO dados){

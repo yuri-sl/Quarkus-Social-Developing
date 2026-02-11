@@ -12,6 +12,7 @@ import org.acme.entity.FollowerEntity;
 import org.acme.entity.UserEntity;
 import org.acme.service.FollowerService;
 import org.acme.service.UserService;
+import org.hibernate.query.UnknownNamedQueryException;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.awt.*;
@@ -48,9 +49,12 @@ public class FollowerResource {
     @GET
     public RestResponse<?> buscarTodosSeguidoresDeUsuario(@PathParam("userId") long userId){
         try{
-            return RestResponse.status(RestResponse.Status.FOUND,followerService.buscarFollowersDeUsuario(userId));
+            return RestResponse.status(RestResponse.Status.ACCEPTED,followerService.buscarFollowersDeUsuario(userId));
 
-        } catch (RuntimeException e) {
+        } catch (UnknownNamedQueryException e) {
+            return RestResponse.status(RestResponse.Status.NOT_FOUND,e.getMessage());
+        }
+        catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }
@@ -60,7 +64,7 @@ public class FollowerResource {
         try{
             return RestResponse.status(RestResponse.Status.OK,followerService.deletarFollowersUserId(userId,unfollowed_by));
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            return RestResponse.status(RestResponse.Status.BAD_REQUEST,e.getMessage());
         }
     }
 }

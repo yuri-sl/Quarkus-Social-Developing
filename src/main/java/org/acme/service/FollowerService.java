@@ -2,6 +2,7 @@ package org.acme.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
 import lombok.AllArgsConstructor;
 import org.acme.dto.FollowRequestDTO;
 import org.acme.dto.FollowResponseDTO;
@@ -22,6 +23,7 @@ import java.util.concurrent.RejectedExecutionException;
 public class FollowerService {
     final FollowerRepository followerRepository;
     final UserService userService;
+    final UserRepository userRepository;
 
 
     @Transactional
@@ -52,9 +54,12 @@ public class FollowerService {
     }
 
     public FollowersPerUserResponseDTO buscarFollowersDeUsuario(long id){
+        userService.verificarSeUsuarioExiste(id);
       List<FollowerEntity> listaFollowers  = followerRepository.listarSeguidoresDeUsuario(id);
       List<FollowersInfoDTO> infosFollowers = new ArrayList<>();
-      String nomeDeUsuario = listaFollowers.getFirst().getUser().getName();
+      String nomeDeUsuario = userRepository.findByIdOptional(id)
+              .map(UserEntity::getName)
+              .orElseThrow(() -> new WebApplicationException("Usuário não encontrado",404));
       for(FollowerEntity f : listaFollowers){
           FollowersInfoDTO dadoFollowerAtual = FollowersInfoDTO.builder()
                   .followerId(f.getFollower().getId_user())
@@ -77,11 +82,12 @@ public class FollowerService {
         UserEntity follower = userService.listarUsuarioPorId(removeFollowerId);
         UserEntity user = userService.listarUsuarioPorId(id);
         if(followerRepository.isUserFollowed(follower,user)){
-            followerRepository.delete("WHERE follower = ?1 AND user = ?2",follower,user);
+            followerRepository.delete("follower = ?1 AND user = ?2",follower,user);
         }
+        followerRepository.flush();
         List<FollowerEntity> listaFollowers  = followerRepository.listarSeguidoresDeUsuario(id);
         List<FollowersInfoDTO> infosFollowers = new ArrayList<>();
-        String nomeDeUsuario = listaFollowers.getFirst().getUser().getName();
+        String nomeDeUsuario = user.getName();
         for(FollowerEntity f : listaFollowers){
             FollowersInfoDTO dadoFollowerAtual = FollowersInfoDTO.builder()
                     .followerId(f.getFollower().getId_user())
